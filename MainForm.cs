@@ -34,6 +34,7 @@ namespace DvdScreenSaver
         float vel = 0.003f; // fraction of screen width per step
         float velX = 0;
         float velY = 0;
+        int cornerCount = 0; // how often have we hit the corner
 
         #region Constructors
 
@@ -101,16 +102,38 @@ namespace DvdScreenSaver
             pos.X += (int)velX;
             pos.Y += (int)velY;
 
+            int count = 0;
             if (pos.X < 0)
+            {
                 velX = Math.Abs(velX);
+                count++;
+            }
             if (pos.Y < 0)
+            {
                 velY = Math.Abs(velY);
+                count++;
+            }
             if (pos.X > Width - pictureBox1.Width)
+            {
                 velX = -Math.Abs(velX);
+                count++;
+            }
             if (pos.Y > Height - pictureBox1.Height)
+            {
                 velY = -Math.Abs(velY);
+                count++;
+            }
 
             pictureBox1.Location = pos;
+
+
+            if (count == 2)
+                this.cornerCount++;
+            if (this.cornerCount > 0)
+            {
+                labelCount.Text = this.cornerCount.ToString();
+                labelCount.Visible = true;
+            }
 
             var c = new HSLColor(pictureBox1.BackColor);
             c.Luminosity = 120;
